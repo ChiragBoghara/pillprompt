@@ -2,66 +2,116 @@
 
 Medication reminder app (offline-first, no login) with reliable local notifications and clean, accessible UI.
 
-**What’s Implemented**
-1. **Core UI Screens**
-1. Splash screen, profile setup, home, add/edit medicine, history, settings
-1. Light and dark themes with the CalmDose visual style and consistent typography
-1. Empty states, basic loading states, and reusable cards/section headers
+## Features
 
-2. **Medicine Management**
-1. Add, edit, delete medicines
-1. Time-based schedules with multiple times per day
-1. Before/after food toggle, active/inactive toggle
-1. Start and end dates with validation
-1. Specific days selection for weekly schedules
+### Core UI
 
-3. **Local Data Layer (SQLite)**
-1. Medicines table with versioned schema (includes weekdays)
-1. Medicine logs table for Taken/Missed/Snoozed actions
-1. Repositories for medicines and logs with join queries
+- Splash screen, profile setup, home, add/edit medicine, history, settings
+- Light and dark themes with the CalmDose visual style and consistent typography (Google Fonts)
+- Empty states, loading states, and reusable cards/section headers
 
-4. **Reminders & Notifications**
-1. Local notifications scheduled per time
-1. Specific-day scheduling with day-of-week recurrence
-1. Snooze scheduling
-1. Android notification actions for Taken and Snooze
-1. Notification permissions handling
+### Medicine Management
 
-5. **History & Status**
-1. Logs stored for Taken/Missed/Snoozed
-1. History screen reads from DB
-1. History filters by medicine and date range
-1. Home screen shows per-time status based on today’s logs
+- Add, edit, delete medicines
+- Time-based schedules with multiple times per day
+- Before/after food toggle, active/inactive toggle
+- Start and end dates with validation
+- Specific days selection for weekly schedules
 
-6. **Home Preview**
-1. Week-view schedule preview with dose counts per day
-1. Daily medicine cards with per-time status rows
+### Local Data Layer (SQLite)
 
-8. **Notification Actions**
-1. Android notification actions for Taken and Snooze
-1. Action handlers log events and schedule snooze
+- Medicines table with versioned schema (includes weekdays)
+- Medicine logs table for Taken/Missed/Snoozed actions
+- Repositories for medicines and logs with join queries
 
-7. **Settings**
-1. Theme toggle wired to persistence
-1. Notification permission status and action
+### Reminders & Notifications
 
-**Tech Stack**
-1. Flutter + GetX
-1. SQLite (`sqflite`)
-1. Local notifications (`flutter_local_notifications`)
-1. Shared preferences for theme persistence
+- Local notifications scheduled per dose time
+- Specific-day scheduling with day-of-week recurrence
+- Snooze scheduling
+- Android notification actions for Taken and Snooze
+- Notification permissions handling
 
-**Run**
+### History & Status
+
+- Logs stored for Taken/Missed/Snoozed
+- History screen with filters by medicine and date range
+- Home screen shows per-time status based on today's logs
+
+### Home Preview
+
+- Week-view schedule preview with dose counts per day
+- Daily medicine cards with per-time status rows
+
+### Settings
+
+- Theme toggle (light/dark) with persistence
+- Language switcher (English, German)
+- Notification permission status and action
+
+### Multi-Language Support
+
+- English and German localizations via Flutter's `intl` / ARB files
+- Localized strings across all screens
+
+### User Feedback
+
+- Snackbar notifications for add, update, and delete actions
+
+## Tech Stack
+
+| Layer            | Library                                |
+| ---------------- | -------------------------------------- |
+| Framework        | Flutter (Dart SDK ^3.10.0)             |
+| State Management | GetX                                   |
+| Database         | SQLite (`sqflite`)                     |
+| Notifications    | `flutter_local_notifications`          |
+| Preferences      | `shared_preferences`                   |
+| Fonts            | `google_fonts`                         |
+| Date/Time        | `intl`, `timezone`, `flutter_timezone` |
+| Localization     | `flutter_localizations`, ARB files     |
+
+## Project Structure
+
+```
+lib/
+├── app/                  # App config, theme, routes
+│   ├── routes/           # GetX route definitions
+│   └── theme/            # Colors, theme data
+├── controllers/          # GetX controllers (medicine, log, settings)
+├── core/
+│   ├── constants/        # App and domain constants
+│   ├── helpers/          # Date/time, notification, localization, snackbar helpers
+│   └── widgets/          # Reusable UI components
+├── data/
+│   ├── db/               # SQLite database setup
+│   ├── models/           # Medicine, MedicineLog, MedicineLogEntry
+│   └── repositories/     # Data access layer
+├── features/             # Feature screens
+│   ├── history/          # History page
+│   ├── home/             # Home page
+│   ├── medicine/         # Medicine form page
+│   ├── reminder/         # Reminder modal
+│   ├── settings/         # Settings page
+│   └── splash/           # Splash page
+├── l10n/                 # Localization (ARB files, generated classes)
+├── services/             # Notification service, settings service
+└── main.dart
+```
+
+## Run
+
 ```bash
-cd e:\App Portfolio\pillprompt
 flutter run
 ```
 
-**Known Issues**
-1. iOS notification action buttons are not wired yet (Android only).
-1. Specific-day scheduling does not yet adjust existing schedules when days are edited in bulk.
+## Known Issues
 
-**Next Steps**
-1. Add “Missed” action button to notifications and handle in background.
-1. Add weekly calendar view with tap-through to daily list.
-1. Add weekday-aware rescheduling on edits and timezone changes.
+- iOS notification action buttons are not wired yet (Android only).
+- Specific-day scheduling does not yet adjust existing schedules when days are edited in bulk.
+
+## Next Steps
+
+- Add "Missed" action button to notifications and handle in background.
+- Add weekly calendar view with tap-through to daily list.
+- Add weekday-aware rescheduling on edits and timezone changes.
