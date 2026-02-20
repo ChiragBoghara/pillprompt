@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/domain_constants.dart';
 import '../../core/helpers/date_time_helpers.dart';
 
 class Medicine {
@@ -58,11 +59,13 @@ class Medicine {
       'id': id,
       'name': name,
       'dosage': dosage,
-      'frequency': frequency,
+      'frequency': MedicineFrequency.normalize(frequency),
       'times': DateTimeHelpers.encodeTimes(times),
       'days': DateTimeHelpers.encodeWeekdays(days),
-      'start_date': DateTimeHelpers.formatDate(startDate),
-      'end_date': endDate != null ? DateTimeHelpers.formatDate(endDate!) : null,
+      'start_date': DateTimeHelpers.formatDateForStorage(startDate),
+      'end_date': endDate != null
+          ? DateTimeHelpers.formatDateForStorage(endDate!)
+          : null,
       'before_food': beforeFood ? 1 : 0,
       'is_active': isActive ? 1 : 0,
     };
@@ -73,11 +76,13 @@ class Medicine {
       id: map['id'] as int?,
       name: map['name'] as String,
       dosage: map['dosage'] as String,
-      frequency: map['frequency'] as String,
+      frequency: MedicineFrequency.normalize(map['frequency'] as String),
       times: DateTimeHelpers.decodeTimes(map['times'] as String?),
       days: DateTimeHelpers.decodeWeekdays(map['days'] as String?),
       startDate: DateTime.parse(map['start_date'] as String),
-      endDate: map['end_date'] == null ? null : DateTime.parse(map['end_date'] as String),
+      endDate: map['end_date'] == null
+          ? null
+          : DateTime.parse(map['end_date'] as String),
       beforeFood: (map['before_food'] as int) == 1,
       isActive: (map['is_active'] as int) == 1,
     );

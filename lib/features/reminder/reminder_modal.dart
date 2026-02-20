@@ -3,7 +3,11 @@ import 'package:get/get.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../controllers/log_controller.dart';
+import '../../core/constants/domain_constants.dart';
+import '../../core/helpers/localization_helpers.dart';
+import '../../core/helpers/snackbar_helpers.dart';
 import '../../data/models/medicine_log.dart';
+import '../../l10n/l10n.dart';
 import '../../services/notification_service.dart';
 
 class ReminderActionModal extends StatelessWidget {
@@ -12,16 +16,19 @@ class ReminderActionModal extends StatelessWidget {
     required this.medicineId,
     required this.medicineName,
     required this.dosage,
-    required this.nextTime,
+    required this.nextTimeLabel,
+    required this.scheduledTime,
   });
 
   final int medicineId;
   final String medicineName;
   final String dosage;
-  final String nextTime;
+  final String nextTimeLabel;
+  final String scheduledTime;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
@@ -46,62 +53,95 @@ class ReminderActionModal extends StatelessWidget {
           Row(
             children: [
               _ActionButton(
-                label: 'Taken',
+                label: statusLabel(l10n, LogStatus.taken),
                 color: AppColors.success,
                 icon: Icons.check_circle_outline,
-                onTap: () => _logAndClose(context, 'Taken'),
+                onTap: () => _logAndClose(context, LogStatus.taken),
               ),
               const SizedBox(width: 12),
               _ActionButton(
-                label: 'Missed',
+                label: statusLabel(l10n, LogStatus.missed),
                 color: AppColors.warning,
                 icon: Icons.close_rounded,
-                onTap: () => _logAndClose(context, 'Missed'),
+                onTap: () => _logAndClose(context, LogStatus.missed),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Text('Snooze', style: textTheme.titleMedium),
+          Text(l10n.snoozeLabel, style: textTheme.titleMedium),
           const SizedBox(height: 8),
           Wrap(
             spacing: 10,
             children: [
-              _SnoozeChip(label: '15 min', onTap: () => _snooze(context, 15)),
-              _SnoozeChip(label: '30 min', onTap: () => _snooze(context, 30)),
-              _SnoozeChip(label: '1 hour', onTap: () => _snooze(context, 60)),
+              _SnoozeChip(
+                label: l10n.snooze15,
+                onTap: () => _snooze(context, 15),
+              ),
+              _SnoozeChip(
+                label: l10n.snooze30,
+                onTap: () => _snooze(context, 30),
+              ),
+              _SnoozeChip(
+                label: l10n.snooze60,
+                onTap: () => _snooze(context, 60),
+              ),
             ],
           ),
           const SizedBox(height: 16),
-          Text('Next reminder: $nextTime', style: textTheme.bodyMedium),
+          Text(l10n.nextReminder(nextTimeLabel), style: textTheme.bodyMedium),
         ],
       ),
     );
   }
 
   Future<void> _snooze(BuildContext context, int minutes) async {
+    final l10n = context.l10n;
     await NotificationService.instance.scheduleSnooze(
       medicineId: medicineId,
       title: medicineName,
-      body: 'Time to take $dosage',
+      body: l10n.timeToTake(dosage),
       minutes: minutes,
     );
-    await _addLog('Snoozed');
-    if (context.mounted) Get.back();
+    await _addLog(LogStatus.snoozed);
+    if (context.mounted) {
+      Get.back();
+      showAppSnackbar(
+        message: l10n.snackSnoozed(minutes),
+        backgroundColor: AppColors.snoozed,
+        icon: Icons.snooze,
+      );
+    }
   }
 
   Future<void> _logAndClose(BuildContext context, String status) async {
+    final l10n = context.l10n;
     await _addLog(status);
-    if (context.mounted) Get.back();
+    if (context.mounted) {
+      Get.back();
+      showAppSnackbar(
+        message: status == LogStatus.taken
+            ? l10n.snackMarkedTaken
+            : l10n.snackMarkedMissed,
+        backgroundColor: status == LogStatus.taken
+            ? AppColors.success
+            : AppColors.warning,
+        icon: status == LogStatus.taken
+            ? Icons.check_circle_outline
+            : Icons.close_rounded,
+      );
+    }
   }
 
   Future<void> _addLog(String status) async {
     final controller = Get.find<LogController>();
-    await controller.addLog(MedicineLog(
-      medicineId: medicineId,
-      scheduledTime: nextTime,
-      status: status,
-      date: DateTime.now(),
-    ));
+    await controller.addLog(
+      MedicineLog(
+        medicineId: medicineId,
+        scheduledTime: scheduledTime,
+        status: status,
+        date: DateTime.now(),
+      ),
+    );
   }
 }
 

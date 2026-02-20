@@ -5,7 +5,8 @@ import '../data/models/medicine_log_entry.dart';
 import '../data/repositories/medicine_log_repository.dart';
 
 class LogController extends GetxController {
-  LogController({required MedicineLogRepository repository}) : _repository = repository;
+  LogController({required MedicineLogRepository repository})
+    : _repository = repository;
 
   final MedicineLogRepository _repository;
 

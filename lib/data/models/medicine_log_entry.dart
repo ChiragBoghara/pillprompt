@@ -1,3 +1,5 @@
+import '../../core/constants/domain_constants.dart';
+
 class MedicineLogEntry {
   final int id;
   final int medicineId;
@@ -24,7 +26,7 @@ class MedicineLogEntry {
       medicineName: map['medicine_name'] as String,
       dosage: map['dosage'] as String,
       scheduledTime: map['scheduled_time'] as String,
-      status: map['status'] as String,
+      status: LogStatus.normalize(map['status'] as String),
       date: DateTime.parse(map['date'] as String),
     );
   }

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pillprompt/l10n/app_localizations.dart';
 
 import '../../app/routes/app_routes.dart';
 import '../../app/theme/app_colors.dart';
 import '../../controllers/medicine_controller.dart';
 import '../../controllers/log_controller.dart';
-import '../../data/models/medicine_log_entry.dart';
+import '../../core/constants/domain_constants.dart';
 import '../../core/helpers/date_time_helpers.dart';
+import '../../core/helpers/localization_helpers.dart';
+import '../../core/helpers/snackbar_helpers.dart';
+import '../../data/models/medicine_log_entry.dart';
 import '../../data/models/medicine.dart';
+import '../../l10n/l10n.dart';
 import '../reminder/reminder_modal.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,23 +22,24 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final today = DateFormat('EEEE, MMM d').format(DateTime.now());
+    final l10n = context.l10n;
+    final localeTag = Localizations.localeOf(context).toLanguageTag();
+    final today = DateFormat('EEEE, MMM d', localeTag).format(DateTime.now());
     final medicineController = Get.find<MedicineController>();
-    final logController = Get.find<LogController>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Today'),
+        title: Text(l10n.todayTitle),
         actions: [
           IconButton(
             onPressed: () => Get.toNamed(AppRoutes.history),
             icon: const Icon(Icons.calendar_month_outlined),
-            tooltip: 'History',
+            tooltip: l10n.historyTooltip,
           ),
           IconButton(
             onPressed: () => Get.toNamed(AppRoutes.settings),
             icon: const Icon(Icons.settings_outlined),
-            tooltip: 'Settings',
+            tooltip: l10n.settingsTooltip,
           ),
           const SizedBox(width: 8),
         ],
@@ -41,41 +47,57 @@ class HomePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Get.toNamed(AppRoutes.medicineForm),
         icon: const Icon(Icons.add),
-        label: const Text('Add Medicine'),
+        label: Text(l10n.addMedicine),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-          children: [
-            Text(today, style: textTheme.bodyMedium),
-            const SizedBox(height: 12),
-            Text("Today's Medicines", style: textTheme.headlineSmall),
-            const SizedBox(height: 16),
-            Obx(() {
-              final medicines = medicineController.medicines.toList();
-              return _WeekPreview(medicines: medicines);
-            }),
-            const SizedBox(height: 20),
-            Obx(() {
-              final medicines = medicineController.medicines.toList();
-              final logs = logController.logs.toList();
-              if (medicines.isEmpty) {
-                return _EmptyState(
-                  onAdd: () => Get.toNamed(AppRoutes.medicineForm),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await Future.wait([
+              medicineController.loadMedicines(),
+              Get.find<LogController>().loadLogs(),
+            ]);
+          },
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            children: [
+              Text(today, style: textTheme.bodyMedium),
+              const SizedBox(height: 12),
+              Text(l10n.todaysMedicines, style: textTheme.headlineSmall),
+              const SizedBox(height: 16),
+              Obx(() {
+                final medicines = medicineController.medicines.toList();
+                return _WeekPreview(
+                  medicines: medicines,
+                  localeTag: localeTag,
+                  l10n: l10n,
                 );
-              }
-              return Column(
-                children: medicines
-                    .map(
-                      (medicine) => _MedicineCard(
-                        medicine: medicine,
-                        status: _latestStatusForToday(logs, medicine.id),
-                      ),
-                    )
-                    .toList(),
-              );
-            }),
-          ],
+              }),
+              const SizedBox(height: 20),
+              Obx(() {
+                final logController = Get.find<LogController>();
+                final medicines = medicineController.medicines.toList();
+                final logs = logController.logs.toList();
+                if (medicines.isEmpty) {
+                  return _EmptyState(
+                    onAdd: () => Get.toNamed(AppRoutes.medicineForm),
+                    l10n: l10n,
+                  );
+                }
+                return Column(
+                  children: medicines
+                      .map(
+                        (medicine) => _MedicineCard(
+                          medicine: medicine,
+                          logs: logs,
+                          l10n: l10n,
+                          localeTag: localeTag,
+                        ),
+                      )
+                      .toList(),
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -83,17 +105,30 @@ class HomePage extends StatelessWidget {
 }
 
 class _MedicineCard extends StatelessWidget {
-  const _MedicineCard({required this.medicine, required this.status});
+  const _MedicineCard({
+    required this.medicine,
+    required this.logs,
+    required this.l10n,
+    required this.localeTag,
+  });
 
   final Medicine medicine;
-  final String status;
+  final List<MedicineLogEntry> logs;
+  final AppLocalizations l10n;
+  final String localeTag;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final firstTime = medicine.times.isNotEmpty
-        ? DateTimeHelpers.formatTimeOfDay(medicine.times.first)
+    final firstTimeLabel = medicine.times.isNotEmpty
+        ? DateTimeHelpers.formatTimeOfDay(
+            medicine.times.first,
+            locale: localeTag,
+          )
         : '--';
+    final firstTimeValue = medicine.times.isNotEmpty
+        ? DateTimeHelpers.formatTimeForStorage(medicine.times.first)
+        : '';
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
@@ -109,7 +144,8 @@ class _MedicineCard extends StatelessWidget {
               medicineId: medicine.id ?? 0,
               medicineName: medicine.name,
               dosage: medicine.dosage,
-              nextTime: firstTime,
+              nextTimeLabel: firstTimeLabel,
+              scheduledTime: firstTimeValue,
             ),
           ),
         );
@@ -149,16 +185,16 @@ class _MedicineCard extends StatelessWidget {
                       _confirmDelete(context, medicine);
                     }
                   },
-                  itemBuilder: (_) => const [
-                    PopupMenuItem(value: 'edit', child: Text('Edit')),
-                    PopupMenuItem(value: 'delete', child: Text('Delete')),
+                  itemBuilder: (_) => [
+                    PopupMenuItem(value: 'edit', child: Text(l10n.edit)),
+                    PopupMenuItem(value: 'delete', child: Text(l10n.delete)),
                   ],
                 ),
               ],
             ),
             const SizedBox(height: 4),
             Text(
-              '${medicine.dosage} · ${medicine.frequency}',
+              '${medicine.dosage} - ${frequencyLabel(l10n, medicine.frequency)}',
               style: textTheme.bodyMedium,
             ),
             const SizedBox(height: 12),
@@ -169,12 +205,12 @@ class _MedicineCard extends StatelessWidget {
               runSpacing: 8,
               children: [
                 _TagChip(
-                  label: medicine.beforeFood ? 'Before Food' : 'After Food',
+                  label: medicine.beforeFood ? l10n.beforeFood : l10n.afterFood,
                 ),
-                if (medicine.isActive) _TagChip(label: 'Active'),
-                if (medicine.frequency == 'Specific Days' &&
+                if (medicine.isActive) _TagChip(label: l10n.active),
+                if (medicine.frequency == MedicineFrequency.specificDays &&
                     medicine.days.isNotEmpty)
-                  _TagChip(label: _daysLabel(medicine.days)),
+                  _TagChip(label: _daysLabel(medicine.days, localeTag)),
               ],
             ),
           ],
@@ -184,7 +220,6 @@ class _MedicineCard extends StatelessWidget {
   }
 
   List<Widget> _buildTimeRows(BuildContext context, Medicine medicine) {
-    final logController = Get.find<LogController>();
     if (medicine.times.isEmpty) {
       return [
         Row(
@@ -198,8 +233,8 @@ class _MedicineCard extends StatelessWidget {
     }
 
     return medicine.times.map((time) {
-      final label = DateTimeHelpers.formatTimeOfDay(time);
-      final status = _statusForTime(logController.logs, medicine.id, label);
+      final label = DateTimeHelpers.formatTimeOfDay(time, locale: localeTag);
+      final status = _statusForTime(logs, medicine.id, time);
       return Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Row(
@@ -208,7 +243,11 @@ class _MedicineCard extends StatelessWidget {
             const SizedBox(width: 6),
             Text(label, style: Theme.of(context).textTheme.bodyLarge),
             const Spacer(),
-            _StatusChip(status: medicine.isActive ? status : 'Paused'),
+            _StatusChip(
+              status: status,
+              l10n: l10n,
+              isPaused: !medicine.isActive,
+            ),
           ],
         ),
       );
@@ -220,46 +259,68 @@ class _MedicineCard extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Delete medicine?'),
-        content: const Text('This will remove the medicine and its reminders.'),
+        title: Text(l10n.deleteMedicineTitle),
+        content: Text(l10n.deleteMedicineContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
     );
     if (confirmed == true) {
       await controller.deleteMedicine(medicine.id ?? 0);
+      showAppSnackbar(
+        message: l10n.snackMedicineDeleted,
+        backgroundColor: AppColors.warning,
+        icon: Icons.delete_outline,
+      );
     }
   }
 }
 
 class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
+  const _StatusChip({
+    required this.status,
+    required this.l10n,
+    required this.isPaused,
+  });
 
   final String status;
+  final AppLocalizations l10n;
+  final bool isPaused;
 
   @override
   Widget build(BuildContext context) {
     Color color;
-    switch (status) {
-      case 'Taken':
-        color = AppColors.success;
-        break;
-      case 'Missed':
-        color = AppColors.warning;
-        break;
-      case 'Snoozed':
-        color = AppColors.snoozed;
-        break;
-      default:
-        color = Theme.of(context).colorScheme.primary;
+    String label;
+
+    if (isPaused) {
+      color = Theme.of(context).colorScheme.primary;
+      label = l10n.paused;
+    } else {
+      switch (LogStatus.normalize(status)) {
+        case LogStatus.taken:
+          color = AppColors.success;
+          label = statusLabel(l10n, status);
+          break;
+        case LogStatus.missed:
+          color = AppColors.warning;
+          label = statusLabel(l10n, status);
+          break;
+        case LogStatus.snoozed:
+          color = AppColors.snoozed;
+          label = statusLabel(l10n, status);
+          break;
+        default:
+          color = Theme.of(context).colorScheme.primary;
+          label = l10n.upcoming;
+      }
     }
 
     return Container(
@@ -269,7 +330,7 @@ class _StatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        status,
+        label,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(color: color),
       ),
     );
@@ -295,9 +356,10 @@ class _TagChip extends StatelessWidget {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.onAdd});
+  const _EmptyState({required this.onAdd, required this.l10n});
 
   final VoidCallback onAdd;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -317,64 +379,58 @@ class _EmptyState extends StatelessWidget {
             color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(height: 12),
-          Text('No medicines yet', style: textTheme.titleMedium),
+          Text(l10n.noMedicinesYet, style: textTheme.titleMedium),
           const SizedBox(height: 6),
           Text(
-            'Add your first medicine to get started.',
+            l10n.addFirstMedicine,
             style: textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(onPressed: onAdd, child: const Text('Add Medicine')),
+          ElevatedButton(onPressed: onAdd, child: Text(l10n.addMedicine)),
         ],
       ),
     );
   }
 }
 
-String _latestStatusForToday(List<MedicineLogEntry> logs, int? medicineId) {
-  if (medicineId == null) return 'Upcoming';
-  final today = DateTime.now();
-  final match = logs.firstWhereOrNull((log) {
-    final date = log.date;
-    return log.medicineId == medicineId &&
-        date.year == today.year &&
-        date.month == today.month &&
-        date.day == today.day;
-  });
-  if (match == null) return 'Upcoming';
-  return match.status;
-}
-
 String _statusForTime(
   List<MedicineLogEntry> logs,
   int? medicineId,
-  String timeLabel,
+  TimeOfDay time,
 ) {
-  if (medicineId == null) return 'Upcoming';
+  if (medicineId == null) return 'upcoming';
+  final stored = DateTimeHelpers.formatTimeForStorage(time);
   final today = DateTime.now();
   final match = logs.firstWhereOrNull((log) {
     final date = log.date;
     return log.medicineId == medicineId &&
-        log.scheduledTime == timeLabel &&
+        log.scheduledTime == stored &&
         date.year == today.year &&
         date.month == today.month &&
         date.day == today.day;
   });
-  if (match == null) return 'Upcoming';
+  if (match == null) return 'upcoming';
   return match.status;
 }
 
-String _daysLabel(List<int> days) {
-  const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  final names = days.map((d) => labels[d - 1]).toList();
+String _daysLabel(List<int> days, String localeTag) {
+  final names = days
+      .map((d) => DateTimeHelpers.weekdayShortName(d, locale: localeTag))
+      .toList();
   return names.join(', ');
 }
 
 class _WeekPreview extends StatelessWidget {
-  const _WeekPreview({required this.medicines});
+  const _WeekPreview({
+    required this.medicines,
+    required this.localeTag,
+    required this.l10n,
+  });
 
   final List<Medicine> medicines;
+  final String localeTag;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -409,7 +465,7 @@ class _WeekPreview extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  DateFormat('EEE').format(date),
+                  DateFormat('EEE', localeTag).format(date),
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
                 const SizedBox(height: 6),
@@ -419,7 +475,7 @@ class _WeekPreview extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '$count doses',
+                  l10n.dosesCount(count),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
@@ -438,7 +494,8 @@ int _doseCountForDay(List<Medicine> medicines, DateTime date) {
     if (date.isBefore(medicine.startDate)) continue;
     if (medicine.endDate != null && date.isAfter(medicine.endDate!)) continue;
 
-    if (medicine.frequency == 'Specific Days' && medicine.days.isNotEmpty) {
+    if (medicine.frequency == MedicineFrequency.specificDays &&
+        medicine.days.isNotEmpty) {
       if (!medicine.days.contains(date.weekday)) continue;
     }
     count += medicine.times.length;

@@ -6,6 +6,7 @@ import '../controllers/log_controller.dart';
 import '../controllers/settings_controller.dart';
 import '../data/repositories/medicine_repository.dart';
 import '../data/repositories/medicine_log_repository.dart';
+import '../l10n/l10n.dart';
 import '../services/notification_service.dart';
 import '../services/settings_service.dart';
 import 'app.dart';
@@ -20,6 +21,7 @@ class AppBootstrap extends StatefulWidget {
 class _AppBootstrapState extends State<AppBootstrap> {
   bool _ready = false;
   String? _error;
+  Locale _startupLocale = const Locale('en');
   late final Future<void> _bootstrapFuture;
 
   @override
@@ -34,13 +36,16 @@ class _AppBootstrapState extends State<AppBootstrap> {
       await notificationService.init();
 
       final settingsService = SettingsService();
+      _startupLocale = Locale(await settingsService.loadLocaleCode());
       final initialTheme = await settingsService.loadThemeMode();
+      final initialLocale = _startupLocale;
 
       Get.put(
         SettingsController(
           settingsService: settingsService,
           notificationService: notificationService,
           initialThemeMode: initialTheme,
+          initialLocale: initialLocale,
         ),
       );
       Get.put(
@@ -79,7 +84,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: Text(
-                    'Startup error: $_error',
+                    appLocalizationsFor(_startupLocale).startupError(_error!),
                     textAlign: TextAlign.center,
                   ),
                 ),

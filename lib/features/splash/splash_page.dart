@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../app/routes/app_routes.dart';
 import '../../app/theme/app_colors.dart';
+import '../../l10n/l10n.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -24,6 +25,7 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -58,10 +60,7 @@ class _SplashPageState extends State<SplashPage> {
               const SizedBox(height: 16),
               Text('PillPrompt', style: textTheme.headlineSmall),
               const SizedBox(height: 8),
-              Text(
-                'Gentle reminders, on your time.',
-                style: textTheme.bodyMedium,
-              ),
+              Text(l10n.splashTagline, style: textTheme.bodyMedium),
             ],
           ),
         ),

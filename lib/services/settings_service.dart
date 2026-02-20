@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsService {
   static const _themeModeKey = 'theme_mode';
+  static const _localeCodeKey = 'locale_code';
 
   Future<ThemeMode> loadThemeMode() async {
     final prefs = await SharedPreferences.getInstance();
@@ -25,5 +26,23 @@ class SettingsService {
       ThemeMode.system => 'system',
     };
     await prefs.setString(_themeModeKey, value);
+  }
+
+  Future<String> loadLocaleCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(_localeCodeKey);
+    switch (value) {
+      case 'de':
+        return 'de';
+      case 'en':
+      default:
+        return 'en';
+    }
+  }
+
+  Future<void> saveLocaleCode(String localeCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    final normalized = localeCode == 'de' ? 'de' : 'en';
+    await prefs.setString(_localeCodeKey, normalized);
   }
 }

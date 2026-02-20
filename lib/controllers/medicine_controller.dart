@@ -8,8 +8,8 @@ class MedicineController extends GetxController {
   MedicineController({
     required MedicineRepository repository,
     required NotificationService notificationService,
-  })  : _repository = repository,
-        _notificationService = notificationService;
+  }) : _repository = repository,
+       _notificationService = notificationService;
 
   final MedicineRepository _repository;
   final NotificationService _notificationService;
@@ -34,6 +34,7 @@ class MedicineController extends GetxController {
     final saved = medicine.copyWith(id: id);
     medicines.insert(0, saved);
     if (saved.isActive) {
+      await _notificationService.requestPermission();
       await _notificationService.scheduleMedicine(saved);
     }
   }
@@ -46,6 +47,7 @@ class MedicineController extends GetxController {
     }
     await _notificationService.cancelMedicine(medicine);
     if (medicine.isActive) {
+      await _notificationService.requestPermission();
       await _notificationService.scheduleMedicine(medicine);
     }
   }
@@ -57,5 +59,14 @@ class MedicineController extends GetxController {
     }
     await _repository.delete(id);
     medicines.removeWhere((item) => item.id == id);
+  }
+
+  Future<void> rescheduleActiveMedicines() async {
+    for (final medicine in medicines) {
+      await _notificationService.cancelMedicine(medicine);
+      if (medicine.isActive) {
+        await _notificationService.scheduleMedicine(medicine);
+      }
+    }
   }
 }

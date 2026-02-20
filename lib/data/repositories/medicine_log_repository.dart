@@ -4,7 +4,8 @@ import '../models/medicine_log.dart';
 import '../models/medicine_log_entry.dart';
 
 class MedicineLogRepository {
-  MedicineLogRepository({AppDatabase? database}) : _database = database ?? AppDatabase.instance;
+  MedicineLogRepository({AppDatabase? database})
+    : _database = database ?? AppDatabase.instance;
 
   final AppDatabase _database;
 

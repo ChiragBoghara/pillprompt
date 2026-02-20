@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/theme/app_colors.dart';
 import '../../controllers/medicine_controller.dart';
+import '../../core/constants/domain_constants.dart';
 import '../../core/helpers/date_time_helpers.dart';
+import '../../core/helpers/snackbar_helpers.dart';
 import '../../data/models/medicine.dart';
+import '../../l10n/l10n.dart';
 
 class MedicineFormPage extends StatefulWidget {
   const MedicineFormPage({super.key});
@@ -18,7 +22,7 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
   final _dosageController = TextEditingController();
 
   List<TimeOfDay> _times = [];
-  String _frequency = 'Daily';
+  String _frequency = MedicineFrequency.daily;
   List<int> _days = [];
   DateTime? _startDate;
   DateTime? _endDate;
@@ -54,11 +58,17 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
+    final localeTag = Localizations.localeOf(context).toLanguageTag();
     final isEdit = _editing != null;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? 'Edit Medicine' : 'Add Medicine')),
+      appBar: AppBar(
+        title: Text(
+          isEdit ? l10n.medicineFormEditTitle : l10n.medicineFormAddTitle,
+        ),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -66,60 +76,67 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             children: [
               Text(
-                isEdit ? 'Update details' : 'Medicine details',
+                isEdit ? l10n.updateDetails : l10n.medicineDetails,
                 style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Medicine name',
-                  hintText: 'e.g., Metformin',
+                decoration: InputDecoration(
+                  labelText: l10n.medicineNameLabel,
+                  hintText: l10n.medicineNameHint,
                 ),
                 validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Name is required'
+                    ? l10n.nameRequired
                     : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _dosageController,
-                decoration: const InputDecoration(
-                  labelText: 'Dosage',
-                  hintText: 'e.g., 500 mg',
+                decoration: InputDecoration(
+                  labelText: l10n.dosageLabel,
+                  hintText: l10n.dosageHint,
                 ),
                 validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Dosage is required'
+                    ? l10n.dosageRequired
                     : null,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 initialValue: _frequency,
-                items: const [
-                  DropdownMenuItem(value: 'Daily', child: Text('Daily')),
+                items: [
                   DropdownMenuItem(
-                    value: 'Specific Days',
-                    child: Text('Specific Days'),
+                    value: MedicineFrequency.daily,
+                    child: Text(l10n.frequencyDaily),
+                  ),
+                  DropdownMenuItem(
+                    value: MedicineFrequency.specificDays,
+                    child: Text(l10n.frequencySpecificDays),
                   ),
                 ],
                 onChanged: (value) {
                   if (value == null) return;
                   setState(() {
                     _frequency = value;
-                    if (_frequency == 'Daily') {
+                    if (_frequency == MedicineFrequency.daily) {
                       _days = [];
                     }
                   });
                 },
-                decoration: const InputDecoration(labelText: 'Frequency'),
+                decoration: InputDecoration(labelText: l10n.frequencyLabel),
               ),
-              if (_frequency == 'Specific Days') ...[
+              if (_frequency == MedicineFrequency.specificDays) ...[
                 const SizedBox(height: 12),
-                Text('Days', style: textTheme.titleMedium),
+                Text(l10n.daysLabel, style: textTheme.titleMedium),
                 const SizedBox(height: 8),
-                Wrap(spacing: 8, runSpacing: 8, children: _weekdayChips()),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _weekdayChips(localeTag),
+                ),
               ],
               const SizedBox(height: 16),
-              Text('Times', style: textTheme.titleMedium),
+              Text(l10n.timesLabel, style: textTheme.titleMedium),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
@@ -127,12 +144,17 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
                 children: [
                   ..._times.map(
                     (time) => InputChip(
-                      label: Text(DateTimeHelpers.formatTimeOfDay(time)),
+                      label: Text(
+                        DateTimeHelpers.formatTimeOfDay(
+                          time,
+                          locale: localeTag,
+                        ),
+                      ),
                       onDeleted: () => _removeTime(time),
                     ),
                   ),
                   ActionChip(
-                    label: const Text('Add time'),
+                    label: Text(l10n.addTime),
                     avatar: const Icon(Icons.add, size: 18),
                     onPressed: _pickTime,
                   ),
@@ -152,16 +174,18 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
                 children: [
                   Expanded(
                     child: _DateField(
-                      label: 'Start date',
+                      label: l10n.startDateLabel,
                       date: _startDate,
+                      localeTag: localeTag,
                       onTap: () => _pickDate(isStart: true),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: _DateField(
-                      label: 'End date (optional)',
+                      label: l10n.endDateOptionalLabel,
                       date: _endDate,
+                      localeTag: localeTag,
                       onTap: () => _pickDate(isStart: false),
                     ),
                   ),
@@ -179,16 +203,16 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
               const SizedBox(height: 16),
               SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Before food'),
+                title: Text(l10n.beforeFood),
                 value: _beforeFood,
                 onChanged: (value) => setState(() => _beforeFood = value),
               ),
               SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Active'),
-                subtitle: const Text(
-                  'Turn off to pause reminders without deleting this medicine',
-                  style: TextStyle(fontSize: 12),
+                title: Text(l10n.active),
+                subtitle: Text(
+                  l10n.pauseHint,
+                  style: const TextStyle(fontSize: 12),
                 ),
                 value: _isActive,
                 onChanged: (value) => setState(() => _isActive = value),
@@ -196,13 +220,10 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _save,
-                child: Text(isEdit ? 'Save Changes' : 'Save Medicine'),
+                child: Text(isEdit ? l10n.saveChanges : l10n.saveMedicine),
               ),
               const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Text('Cancel'),
-              ),
+              TextButton(onPressed: () => Get.back(), child: Text(l10n.cancel)),
             ],
           ),
         ),
@@ -218,8 +239,9 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
     if (selected == null) return;
     if (_times.any(
       (time) => time.hour == selected.hour && time.minute == selected.minute,
-    ))
+    )) {
       return;
+    }
     setState(() {
       _times.add(selected);
       _timesError = null;
@@ -257,21 +279,22 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
   }
 
   Future<void> _save() async {
+    final l10n = context.l10n;
     final isValid = _formKey.currentState?.validate() ?? false;
-    if (_frequency == 'Specific Days' && _days.isEmpty) {
-      setState(() => _timesError = 'Select at least one day');
+    if (_frequency == MedicineFrequency.specificDays && _days.isEmpty) {
+      setState(() => _timesError = l10n.selectAtLeastOneDay);
       return;
     }
     if (_times.isEmpty) {
-      setState(() => _timesError = 'Select at least one time');
+      setState(() => _timesError = l10n.selectAtLeastOneTime);
       return;
     }
     if (_startDate == null) {
-      setState(() => _dateError = 'Start date is required');
+      setState(() => _dateError = l10n.startDateRequired);
       return;
     }
     if (_endDate != null && _endDate!.isBefore(_startDate!)) {
-      setState(() => _dateError = 'End date must be after the start date');
+      setState(() => _dateError = l10n.endDateAfterStart);
       return;
     }
     if (!isValid) return;
@@ -298,16 +321,24 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
 
     if (mounted) {
       Get.back();
+      showAppSnackbar(
+        message: _editing == null
+            ? l10n.snackMedicineAdded
+            : l10n.snackMedicineUpdated,
+        backgroundColor: AppColors.success,
+        icon: Icons.check_circle_outline,
+      );
     }
   }
 
-  List<Widget> _weekdayChips() {
-    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return List.generate(labels.length, (index) {
+  List<Widget> _weekdayChips(String localeTag) {
+    return List.generate(7, (index) {
       final dayValue = index + 1;
       final selected = _days.contains(dayValue);
       return FilterChip(
-        label: Text(labels[index]),
+        label: Text(
+          DateTimeHelpers.weekdayShortName(dayValue, locale: localeTag),
+        ),
         selected: selected,
         onSelected: (value) {
           setState(() {
@@ -327,22 +358,27 @@ class _DateField extends StatelessWidget {
   const _DateField({
     required this.label,
     required this.date,
+    required this.localeTag,
     required this.onTap,
   });
 
   final String label;
   final DateTime? date;
+  final String localeTag;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: InputDecorator(
         decoration: InputDecoration(labelText: label),
         child: Text(
-          date == null ? 'Select date' : DateTimeHelpers.formatDate(date!),
+          date == null
+              ? l10n.selectDate
+              : DateTimeHelpers.formatDate(date!, locale: localeTag),
         ),
       ),
     );

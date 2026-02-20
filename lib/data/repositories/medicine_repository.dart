@@ -3,7 +3,8 @@ import '../db/app_database.dart';
 import '../models/medicine.dart';
 
 class MedicineRepository {
-  MedicineRepository({AppDatabase? database}) : _database = database ?? AppDatabase.instance;
+  MedicineRepository({AppDatabase? database})
+    : _database = database ?? AppDatabase.instance;
 
   final AppDatabase _database;
 
@@ -33,7 +34,10 @@ class MedicineRepository {
 
   Future<List<Medicine>> getAll() async {
     final db = await _database.database;
-    final results = await db.query(AppConstants.tableMedicines, orderBy: 'id DESC');
+    final results = await db.query(
+      AppConstants.tableMedicines,
+      orderBy: 'id DESC',
+    );
     return results.map(Medicine.fromMap).toList();
   }
 

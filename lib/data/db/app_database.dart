@@ -54,11 +54,15 @@ class AppDatabase {
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           // Check if column already exists before adding it
-          final result = await db.rawQuery('PRAGMA table_info(${AppConstants.tableMedicines})');
+          final result = await db.rawQuery(
+            'PRAGMA table_info(${AppConstants.tableMedicines})',
+          );
           final columnExists = result.any((col) => col['name'] == 'days');
 
           if (!columnExists) {
-            await db.execute('ALTER TABLE ${AppConstants.tableMedicines} ADD COLUMN days TEXT');
+            await db.execute(
+              'ALTER TABLE ${AppConstants.tableMedicines} ADD COLUMN days TEXT',
+            );
           }
         }
       },

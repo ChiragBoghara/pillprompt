@@ -1,0 +1,127 @@
+{
+  "@@locale": "en",
+  "appTitle": "PillPrompt",
+  "splashTagline": "Gentle reminders, on your time.",
+  "startupError": "Startup error: {message}",
+  "@startupError": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "todayTitle": "Today",
+  "todaysMedicines": "Today's Medicines",
+  "historyTooltip": "History",
+  "settingsTooltip": "Settings",
+  "addMedicine": "Add Medicine",
+  "noMedicinesYet": "No medicines yet",
+  "addFirstMedicine": "Add your first medicine to get started.",
+  "upcoming": "Upcoming",
+  "paused": "Paused",
+  "beforeFood": "Before Food",
+  "afterFood": "After Food",
+  "active": "Active",
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteMedicineTitle": "Delete medicine?",
+  "deleteMedicineContent": "This will remove the medicine and its reminders.",
+  "cancel": "Cancel",
+  "settingsTitle": "Settings",
+  "preferencesSection": "Preferences",
+  "themeLabel": "Theme",
+  "languageLabel": "Language",
+  "englishLabel": "English",
+  "germanLabel": "German",
+  "alertsSection": "Alerts",
+  "notificationsLabel": "Notifications",
+  "permissionEnabled": "Permission: Enabled",
+  "permissionDisabled": "Permission: Disabled",
+  "manage": "Manage",
+  "supportSection": "Support",
+  "aboutPillPrompt": "About PillPrompt",
+  "privacyPolicy": "Privacy Policy",
+  "version": "Version {value}",
+  "@version": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "historyTitle": "History",
+  "medicationHistory": "Medication history",
+  "filterByMedicineOrDateRange": "Filter by medicine or date range.",
+  "medicineLabel": "Medicine",
+  "allMedicines": "All medicines",
+  "dateRangeLabel": "Date range",
+  "noHistoryFound": "No history found for the selected filters.",
+  "allDates": "All dates",
+  "medicineFormEditTitle": "Edit Medicine",
+  "medicineFormAddTitle": "Add Medicine",
+  "updateDetails": "Update details",
+  "medicineDetails": "Medicine details",
+  "medicineNameLabel": "Medicine name",
+  "medicineNameHint": "e.g., Metformin",
+  "nameRequired": "Name is required",
+  "dosageLabel": "Dosage",
+  "dosageHint": "e.g., 500 mg",
+  "dosageRequired": "Dosage is required",
+  "frequencyLabel": "Frequency",
+  "frequencyDaily": "Daily",
+  "frequencySpecificDays": "Specific Days",
+  "daysLabel": "Days",
+  "timesLabel": "Times",
+  "addTime": "Add time",
+  "startDateLabel": "Start date",
+  "endDateOptionalLabel": "End date (optional)",
+  "selectDate": "Select date",
+  "pauseHint": "Turn off to pause reminders without deleting this medicine",
+  "saveChanges": "Save Changes",
+  "saveMedicine": "Save Medicine",
+  "selectAtLeastOneDay": "Select at least one day",
+  "selectAtLeastOneTime": "Select at least one time",
+  "startDateRequired": "Start date is required",
+  "endDateAfterStart": "End date must be after the start date",
+  "statusTaken": "Taken",
+  "statusMissed": "Missed",
+  "statusSnoozed": "Snoozed",
+  "snoozeLabel": "Snooze",
+  "snooze15": "15 min",
+  "snooze30": "30 min",
+  "snooze60": "1 hour",
+  "nextReminder": "Next reminder: {time}",
+  "@nextReminder": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "timeToTake": "Time to take {dosage}",
+  "@timeToTake": {
+    "placeholders": {
+      "dosage": {}
+    }
+  },
+  "notificationActionTaken": "Taken",
+  "notificationActionSnooze": "Snooze",
+  "notificationChannelName": "Medication Reminders",
+  "notificationChannelDescription": "Medication reminder alerts",
+  "fallbackMedicineName": "Medicine",
+  "dosesCount": "{count, plural, =1{1 dose} other{{count} doses}}",
+  "@dosesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "snackMedicineAdded": "Medicine added",
+  "snackMedicineUpdated": "Medicine updated",
+  "snackMedicineDeleted": "Medicine deleted",
+  "snackMarkedTaken": "Marked as taken",
+  "snackMarkedMissed": "Marked as missed",
+  "snackSnoozed": "Snoozed for {minutes} min",
+  "@snackSnoozed": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "@@locale": "de",
+  "appTitle": "PillPrompt",
+  "splashTagline": "Sanfte Erinnerungen, zu deiner Zeit.",
+  "startupError": "Startfehler: {message}",
+  "@startupError": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "todayTitle": "Heute",
+  "todaysMedicines": "Heutige Medikamente",
+  "historyTooltip": "Verlauf",
+  "settingsTooltip": "Einstellungen",
+  "addMedicine": "Medikament hinzufügen",
+  "noMedicinesYet": "Noch keine Medikamente",
+  "addFirstMedicine": "Füge dein erstes Medikament hinzu, um zu starten.",
+  "upcoming": "Bevorstehend",
+  "paused": "Pausiert",
+  "beforeFood": "Vor dem Essen",
+  "afterFood": "Nach dem Essen",
+  "active": "Aktiv",
+  "edit": "Bearbeiten",
+  "delete": "Löschen",
+  "deleteMedicineTitle": "Medikament löschen?",
+  "deleteMedicineContent": "Dadurch werden das Medikament und seine Erinnerungen entfernt.",
+  "cancel": "Abbrechen",
+  "settingsTitle": "Einstellungen",
+  "preferencesSection": "Präferenzen",
+  "themeLabel": "Design",
+  "languageLabel": "Sprache",
+  "englishLabel": "Englisch",
+  "germanLabel": "Deutsch",
+  "alertsSection": "Hinweise",
+  "notificationsLabel": "Benachrichtigungen",
+  "permissionEnabled": "Berechtigung: Aktiviert",
+  "permissionDisabled": "Berechtigung: Deaktiviert",
+  "manage": "Verwalten",
+  "supportSection": "Support",
+  "aboutPillPrompt": "Über PillPrompt",
+  "privacyPolicy": "Datenschutzrichtlinie",
+  "version": "Version {value}",
+  "@version": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "historyTitle": "Verlauf",
+  "medicationHistory": "Medikamentenverlauf",
+  "filterByMedicineOrDateRange": "Nach Medikament oder Datumsbereich filtern.",
+  "medicineLabel": "Medikament",
+  "allMedicines": "Alle Medikamente",
+  "dateRangeLabel": "Datumsbereich",
+  "noHistoryFound": "Kein Verlauf für die ausgewählten Filter gefunden.",
+  "allDates": "Alle Daten",
+  "medicineFormEditTitle": "Medikament bearbeiten",
+  "medicineFormAddTitle": "Medikament hinzufügen",
+  "updateDetails": "Details aktualisieren",
+  "medicineDetails": "Medikamentendetails",
+  "medicineNameLabel": "Medikamentenname",
+  "medicineNameHint": "z. B. Metformin",
+  "nameRequired": "Name ist erforderlich",
+  "dosageLabel": "Dosierung",
+  "dosageHint": "z. B. 500 mg",
+  "dosageRequired": "Dosierung ist erforderlich",
+  "frequencyLabel": "Häufigkeit",
+  "frequencyDaily": "Täglich",
+  "frequencySpecificDays": "Bestimmte Tage",
+  "daysLabel": "Tage",
+  "timesLabel": "Zeiten",
+  "addTime": "Zeit hinzufügen",
+  "startDateLabel": "Startdatum",
+  "endDateOptionalLabel": "Enddatum (optional)",
+  "selectDate": "Datum auswählen",
+  "pauseHint": "Deaktiviere dies, um Erinnerungen zu pausieren, ohne das Medikament zu löschen",
+  "saveChanges": "Änderungen speichern",
+  "saveMedicine": "Medikament speichern",
+  "selectAtLeastOneDay": "Mindestens einen Tag auswählen",
+  "selectAtLeastOneTime": "Mindestens eine Uhrzeit auswählen",
+  "startDateRequired": "Startdatum ist erforderlich",
+  "endDateAfterStart": "Enddatum muss nach dem Startdatum liegen",
+  "statusTaken": "Eingenommen",
+  "statusMissed": "Verpasst",
+  "statusSnoozed": "Verschoben",
+  "snoozeLabel": "Später",
+  "snooze15": "15 Min.",
+  "snooze30": "30 Min.",
+  "snooze60": "1 Std.",
+  "nextReminder": "Nächste Erinnerung: {time}",
+  "@nextReminder": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "timeToTake": "Zeit für {dosage}",
+  "@timeToTake": {
+    "placeholders": {
+      "dosage": {}
+    }
+  },
+  "notificationActionTaken": "Eingenommen",
+  "notificationActionSnooze": "Später",
+  "notificationChannelName": "Medikamentenerinnerungen",
+  "notificationChannelDescription": "Erinnerungen für Medikamente",
+  "fallbackMedicineName": "Medikament",
+  "dosesCount": "{count, plural, =1{1 Dosis} other{{count} Dosen}}",
+  "@dosesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "snackMedicineAdded": "Medikament hinzugefügt",
+  "snackMedicineUpdated": "Medikament aktualisiert",
+  "snackMedicineDeleted": "Medikament gelöscht",
+  "snackMarkedTaken": "Als eingenommen markiert",
+  "snackMarkedMissed": "Als verpasst markiert",
+  "snackSnoozed": "Verschoben um {minutes} Min.",
+  "@snackSnoozed": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  }
+}
