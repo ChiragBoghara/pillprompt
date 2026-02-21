@@ -72,7 +72,7 @@ class _AppBootstrapState extends State<AppBootstrap> {
         if (!_ready) {
           return const MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: Scaffold(body: Center(child: CircularProgressIndicator())),
+            home: Scaffold(body: Center(child: SizedBox.shrink())),
           );
         }
 

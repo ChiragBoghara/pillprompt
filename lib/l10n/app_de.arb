@@ -123,5 +123,21 @@
         "type": "int"
       }
     }
-  }
+  },
+  "aboutTitle": "Über PillPrompt",
+  "aboutDescription": "PillPrompt hilft dir, deine Medikamente im Blick zu behalten — mit sanften, rechtzeitigen Erinnerungen. Verpasse nie wieder eine Dosis.",
+  "aboutDeveloperLabel": "Entwickler",
+  "aboutDeveloperName": "PillPrompt Team",
+  "aboutContactUs": "Kontakt",
+  "aboutContactEmail": "support@pillprompt.app",
+  "aboutRateApp": "Im Play Store bewerten",
+  "aboutRateAppSubtitle": "Du magst PillPrompt? Hinterlasse eine Bewertung!",
+  "aboutShareApp": "App teilen",
+  "aboutShareAppSubtitle": "Erzähle deinen Freunden von PillPrompt",
+  "aboutShareMessage": "Schau dir PillPrompt an — eine einfache Medikamentenerinnerungs-App!\nhttps://play.google.com/store/apps/details?id=com.pillprompt.app",
+  "aboutTermsOfService": "Nutzungsbedingungen",
+  "aboutOpenSourceLicenses": "Open-Source-Lizenzen",
+  "generalSection": "Allgemein",
+  "linksSection": "Links",
+  "legalSection": "Rechtliches"
 }

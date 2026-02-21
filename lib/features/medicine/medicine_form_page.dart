@@ -325,7 +325,7 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
         message: _editing == null
             ? l10n.snackMedicineAdded
             : l10n.snackMedicineUpdated,
-        backgroundColor: AppColors.success,
+        backgroundColor: AppColors.sage,
         icon: Icons.check_circle_outline,
       );
     }

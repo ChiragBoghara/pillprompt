@@ -637,6 +637,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Snoozed for {minutes} min'**
   String snackSnoozed(int minutes);
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About PillPrompt'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'PillPrompt helps you stay on track with your medications through gentle, timely reminders. Never miss a dose again.'**
+  String get aboutDescription;
+
+  /// No description provided for @aboutDeveloperLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get aboutDeveloperLabel;
+
+  /// No description provided for @aboutDeveloperName.
+  ///
+  /// In en, this message translates to:
+  /// **'PillPrompt Team'**
+  String get aboutDeveloperName;
+
+  /// No description provided for @aboutContactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Us'**
+  String get aboutContactUs;
+
+  /// No description provided for @aboutContactEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'support@pillprompt.app'**
+  String get aboutContactEmail;
+
+  /// No description provided for @aboutRateApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate on Play Store'**
+  String get aboutRateApp;
+
+  /// No description provided for @aboutRateAppSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Love PillPrompt? Leave us a review!'**
+  String get aboutRateAppSubtitle;
+
+  /// No description provided for @aboutShareApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share App'**
+  String get aboutShareApp;
+
+  /// No description provided for @aboutShareAppSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell your friends about PillPrompt'**
+  String get aboutShareAppSubtitle;
+
+  /// No description provided for @aboutShareMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out PillPrompt — a simple medication reminder app!\nhttps://play.google.com/store/apps/details?id=com.pillprompt.app'**
+  String get aboutShareMessage;
+
+  /// No description provided for @aboutTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get aboutTermsOfService;
+
+  /// No description provided for @aboutOpenSourceLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Source Licenses'**
+  String get aboutOpenSourceLicenses;
+
+  /// No description provided for @generalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get generalSection;
+
+  /// No description provided for @linksSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Links'**
+  String get linksSection;
+
+  /// No description provided for @legalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get legalSection;
 }
 
 class _AppLocalizationsDelegate

@@ -297,4 +297,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String snackSnoozed(int minutes) {
     return 'Snoozed for $minutes min';
   }
+
+  @override
+  String get aboutTitle => 'About PillPrompt';
+
+  @override
+  String get aboutDescription =>
+      'PillPrompt helps you stay on track with your medications through gentle, timely reminders. Never miss a dose again.';
+
+  @override
+  String get aboutDeveloperLabel => 'Developer';
+
+  @override
+  String get aboutDeveloperName => 'PillPrompt Team';
+
+  @override
+  String get aboutContactUs => 'Contact Us';
+
+  @override
+  String get aboutContactEmail => 'support@pillprompt.app';
+
+  @override
+  String get aboutRateApp => 'Rate on Play Store';
+
+  @override
+  String get aboutRateAppSubtitle => 'Love PillPrompt? Leave us a review!';
+
+  @override
+  String get aboutShareApp => 'Share App';
+
+  @override
+  String get aboutShareAppSubtitle => 'Tell your friends about PillPrompt';
+
+  @override
+  String get aboutShareMessage =>
+      'Check out PillPrompt — a simple medication reminder app!\nhttps://play.google.com/store/apps/details?id=com.pillprompt.app';
+
+  @override
+  String get aboutTermsOfService => 'Terms of Service';
+
+  @override
+  String get aboutOpenSourceLicenses => 'Open Source Licenses';
+
+  @override
+  String get generalSection => 'General';
+
+  @override
+  String get linksSection => 'Links';
+
+  @override
+  String get legalSection => 'Legal';
 }

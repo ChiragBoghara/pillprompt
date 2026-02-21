@@ -123,7 +123,7 @@ class ReminderActionModal extends StatelessWidget {
             ? l10n.snackMarkedTaken
             : l10n.snackMarkedMissed,
         backgroundColor: status == LogStatus.taken
-            ? AppColors.success
+            ? AppColors.sage
             : AppColors.warning,
         icon: status == LogStatus.taken
             ? Icons.check_circle_outline

@@ -13,4 +13,6 @@ class AppConstants {
 
   static const String actionTaken = 'action_taken';
   static const String actionSnooze = 'action_snooze';
+
+  static const String appLogo = 'assets/images/app-logo.png';
 }

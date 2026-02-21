@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/routes/app_routes.dart';
 import '../../app/theme/app_colors.dart';
 import '../../controllers/settings_controller.dart';
 import '../../l10n/l10n.dart';
@@ -108,7 +109,7 @@ class SettingsPage extends StatelessWidget {
                   icon: Icons.info_outline,
                   title: l10n.aboutPillPrompt,
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {},
+                  onTap: () => Get.toNamed(AppRoutes.about),
                 ),
                 const Divider(height: 1),
                 _SettingsRow(

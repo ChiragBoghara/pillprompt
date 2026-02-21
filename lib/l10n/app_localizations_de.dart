@@ -300,4 +300,55 @@ class AppLocalizationsDe extends AppLocalizations {
   String snackSnoozed(int minutes) {
     return 'Verschoben um $minutes Min.';
   }
+
+  @override
+  String get aboutTitle => 'Über PillPrompt';
+
+  @override
+  String get aboutDescription =>
+      'PillPrompt hilft dir, deine Medikamente im Blick zu behalten — mit sanften, rechtzeitigen Erinnerungen. Verpasse nie wieder eine Dosis.';
+
+  @override
+  String get aboutDeveloperLabel => 'Entwickler';
+
+  @override
+  String get aboutDeveloperName => 'PillPrompt Team';
+
+  @override
+  String get aboutContactUs => 'Kontakt';
+
+  @override
+  String get aboutContactEmail => 'support@pillprompt.app';
+
+  @override
+  String get aboutRateApp => 'Im Play Store bewerten';
+
+  @override
+  String get aboutRateAppSubtitle =>
+      'Du magst PillPrompt? Hinterlasse eine Bewertung!';
+
+  @override
+  String get aboutShareApp => 'App teilen';
+
+  @override
+  String get aboutShareAppSubtitle => 'Erzähle deinen Freunden von PillPrompt';
+
+  @override
+  String get aboutShareMessage =>
+      'Schau dir PillPrompt an — eine einfache Medikamentenerinnerungs-App!\nhttps://play.google.com/store/apps/details?id=com.pillprompt.app';
+
+  @override
+  String get aboutTermsOfService => 'Nutzungsbedingungen';
+
+  @override
+  String get aboutOpenSourceLicenses => 'Open-Source-Lizenzen';
+
+  @override
+  String get generalSection => 'Allgemein';
+
+  @override
+  String get linksSection => 'Links';
+
+  @override
+  String get legalSection => 'Rechtliches';
 }

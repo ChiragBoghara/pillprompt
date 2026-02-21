@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
+
+const _fontFamily = 'Lexend';
 
 class AppTheme {
   static ThemeData get light {
@@ -29,7 +30,8 @@ class AppTheme {
         backgroundColor: AppColors.lightBg,
         foregroundColor: AppColors.lightText,
         elevation: 0,
-        titleTextStyle: GoogleFonts.lexend(
+        titleTextStyle: const TextStyle(
+          fontFamily: _fontFamily,
           fontSize: 22,
           fontWeight: FontWeight.w600,
           color: AppColors.lightText,
@@ -38,7 +40,8 @@ class AppTheme {
       chipTheme: base.chipTheme.copyWith(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         selectedColor: AppColors.sage,
-        labelStyle: GoogleFonts.lexend(
+        labelStyle: const TextStyle(
+          fontFamily: _fontFamily,
           fontSize: 14,
           fontWeight: FontWeight.w600,
           color: AppColors.darkBg,
@@ -66,7 +69,8 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          textStyle: GoogleFonts.lexend(
+          textStyle: const TextStyle(
+            fontFamily: _fontFamily,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -102,7 +106,8 @@ class AppTheme {
         backgroundColor: AppColors.darkBg,
         foregroundColor: AppColors.darkText,
         elevation: 0,
-        titleTextStyle: GoogleFonts.lexend(
+        titleTextStyle: const TextStyle(
+          fontFamily: _fontFamily,
           fontSize: 22,
           fontWeight: FontWeight.w600,
           color: AppColors.darkText,
@@ -111,7 +116,8 @@ class AppTheme {
       chipTheme: base.chipTheme.copyWith(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         selectedColor: AppColors.sage,
-        labelStyle: GoogleFonts.lexend(
+        labelStyle: const TextStyle(
+          fontFamily: _fontFamily,
           fontSize: 14,
           fontWeight: FontWeight.w600,
           color: AppColors.darkText,
@@ -139,7 +145,8 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          textStyle: GoogleFonts.lexend(
+          textStyle: const TextStyle(
+            fontFamily: _fontFamily,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -156,37 +163,44 @@ class AppTheme {
     final muted = isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted;
 
     return base.copyWith(
-      displayLarge: GoogleFonts.lexend(
+      displayLarge: TextStyle(
+        fontFamily: _fontFamily,
         fontSize: 26,
         fontWeight: FontWeight.w700,
         color: color,
       ),
-      headlineSmall: GoogleFonts.lexend(
+      headlineSmall: TextStyle(
+        fontFamily: _fontFamily,
         fontSize: 21,
         fontWeight: FontWeight.w600,
         color: color,
       ),
-      titleMedium: GoogleFonts.lexend(
+      titleMedium: TextStyle(
+        fontFamily: _fontFamily,
         fontSize: 16,
         fontWeight: FontWeight.w600,
         color: color,
       ),
-      bodyLarge: GoogleFonts.lexend(
+      bodyLarge: TextStyle(
+        fontFamily: _fontFamily,
         fontSize: 15,
         fontWeight: FontWeight.w400,
         color: color,
       ),
-      bodyMedium: GoogleFonts.lexend(
+      bodyMedium: TextStyle(
+        fontFamily: _fontFamily,
         fontSize: 13,
         fontWeight: FontWeight.w400,
         color: muted,
       ),
-      labelLarge: GoogleFonts.lexend(
+      labelLarge: TextStyle(
+        fontFamily: _fontFamily,
         fontSize: 13,
         fontWeight: FontWeight.w600,
         color: color,
       ),
-      labelMedium: GoogleFonts.lexend(
+      labelMedium: TextStyle(
+        fontFamily: _fontFamily,
         fontSize: 12,
         fontWeight: FontWeight.w600,
         color: muted,

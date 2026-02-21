@@ -123,5 +123,21 @@
         "type": "int"
       }
     }
-  }
+  },
+  "aboutTitle": "About PillPrompt",
+  "aboutDescription": "PillPrompt helps you stay on track with your medications through gentle, timely reminders. Never miss a dose again.",
+  "aboutDeveloperLabel": "Developer",
+  "aboutDeveloperName": "PillPrompt Team",
+  "aboutContactUs": "Contact Us",
+  "aboutContactEmail": "support@pillprompt.app",
+  "aboutRateApp": "Rate on Play Store",
+  "aboutRateAppSubtitle": "Love PillPrompt? Leave us a review!",
+  "aboutShareApp": "Share App",
+  "aboutShareAppSubtitle": "Tell your friends about PillPrompt",
+  "aboutShareMessage": "Check out PillPrompt — a simple medication reminder app!\nhttps://play.google.com/store/apps/details?id=com.pillprompt.app",
+  "aboutTermsOfService": "Terms of Service",
+  "aboutOpenSourceLicenses": "Open Source Licenses",
+  "generalSection": "General",
+  "linksSection": "Links",
+  "legalSection": "Legal"
 }

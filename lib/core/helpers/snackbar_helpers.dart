@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void showAppSnackbar({
   required String message,
@@ -19,7 +18,8 @@ void showAppSnackbar({
           Flexible(
             child: Text(
               message,
-              style: GoogleFonts.lexend(
+              style: const TextStyle(
+                fontFamily: 'Lexend',
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
                 color: Colors.white,
@@ -34,7 +34,7 @@ void showAppSnackbar({
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       maxWidth: 280,
       duration: const Duration(seconds: 2),
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition: SnackPosition.TOP,
       animationDuration: const Duration(milliseconds: 300),
     ),
   );
