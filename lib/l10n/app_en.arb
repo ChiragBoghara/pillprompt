@@ -60,7 +60,7 @@
   "medicineNameLabel": "Medicine name",
   "medicineNameHint": "e.g., Metformin",
   "nameRequired": "Name is required",
-  "dosageLabel": "Dosage",
+  "dosageLabel": "Dosage (optional)",
   "dosageHint": "e.g., 500 mg",
   "dosageRequired": "Dosage is required",
   "frequencyLabel": "Frequency",

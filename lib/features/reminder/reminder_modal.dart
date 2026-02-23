@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pillprompt/l10n/app_localizations.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../controllers/log_controller.dart';
@@ -22,7 +23,7 @@ class ReminderActionModal extends StatelessWidget {
 
   final int medicineId;
   final String medicineName;
-  final String dosage;
+  final String? dosage;
   final String nextTimeLabel;
   final String scheduledTime;
 
@@ -30,6 +31,7 @@ class ReminderActionModal extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
+    final showDosage = dosage?.trim().isNotEmpty == true;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
@@ -47,8 +49,10 @@ class ReminderActionModal extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(medicineName, style: textTheme.headlineSmall),
-          const SizedBox(height: 6),
-          Text(dosage, style: textTheme.bodyMedium),
+          if (showDosage) ...[
+            const SizedBox(height: 6),
+            Text(dosage!.trim(), style: textTheme.bodyMedium),
+          ],
           const SizedBox(height: 16),
           Row(
             children: [
@@ -99,7 +103,7 @@ class ReminderActionModal extends StatelessWidget {
     await NotificationService.instance.scheduleSnooze(
       medicineId: medicineId,
       title: medicineName,
-      body: l10n.timeToTake(dosage),
+      body: l10n.timeToTake(_notificationDoseLabel(l10n)),
       minutes: minutes,
     );
     await _addLog(LogStatus.snoozed);
@@ -111,6 +115,18 @@ class ReminderActionModal extends StatelessWidget {
         icon: Icons.snooze,
       );
     }
+  }
+
+  String _notificationDoseLabel(AppLocalizations l10n) {
+    final trimmed = dosage?.trim();
+    if (trimmed != null && trimmed.isNotEmpty) {
+      return trimmed;
+    }
+    final name = medicineName.trim();
+    if (name.isNotEmpty) {
+      return name;
+    }
+    return l10n.fallbackMedicineName;
   }
 
   Future<void> _logAndClose(BuildContext context, String status) async {

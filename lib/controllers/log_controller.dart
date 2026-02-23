@@ -1,10 +1,11 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '../data/models/medicine_log.dart';
 import '../data/models/medicine_log_entry.dart';
 import '../data/repositories/medicine_log_repository.dart';
 
-class LogController extends GetxController {
+class LogController extends GetxController with WidgetsBindingObserver {
   LogController({required MedicineLogRepository repository})
     : _repository = repository;
 
@@ -14,9 +15,28 @@ class LogController extends GetxController {
   final isLoading = false.obs;
 
   @override
+  void onInit() {
+    super.onInit();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
   void onReady() {
     super.onReady();
     loadLogs();
+  }
+
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && !isLoading.value) {
+      loadLogs();
+    }
   }
 
   Future<void> loadLogs() async {

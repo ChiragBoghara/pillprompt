@@ -401,7 +401,7 @@ abstract class AppLocalizations {
   /// No description provided for @dosageLabel.
   ///
   /// In en, this message translates to:
-  /// **'Dosage'**
+  /// **'Dosage (optional)'**
   String get dosageLabel;
 
   /// No description provided for @dosageHint.

@@ -6,13 +6,17 @@ import 'package:get/get.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../app/theme/app_colors.dart';
 import '../core/constants/app_constants.dart';
 import '../core/constants/domain_constants.dart';
 import '../core/helpers/date_time_helpers.dart';
 import '../core/helpers/notification_helpers.dart';
+import '../core/helpers/snackbar_helpers.dart';
 import '../controllers/log_controller.dart';
 import '../data/models/medicine_log.dart';
 import '../data/models/medicine.dart';
+import '../data/repositories/medicine_repository.dart';
+import '../l10n/app_localizations.dart';
 import '../l10n/l10n.dart';
 
 class NotificationService {
@@ -107,6 +111,7 @@ class NotificationService {
       'frequency=${medicine.frequency}, times=${medicine.times.length})',
     );
     final strings = appLocalizationsFor(Get.locale);
+    final doseLabel = _doseLabel(strings, medicine.name, medicine.dosage);
     for (final time in medicine.times) {
       final timeLabel = DateTimeHelpers.formatTimeForStorage(time);
       final payload = _buildPayload(
@@ -128,7 +133,7 @@ class NotificationService {
             await _plugin.zonedSchedule(
               id,
               medicine.name,
-              strings.timeToTake(medicine.dosage),
+              strings.timeToTake(doseLabel),
               scheduled,
               _notificationDetails(),
               androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -142,7 +147,7 @@ class NotificationService {
             await _plugin.zonedSchedule(
               id,
               medicine.name,
-              strings.timeToTake(medicine.dosage),
+              strings.timeToTake(doseLabel),
               scheduled,
               _notificationDetails(),
               androidScheduleMode: AndroidScheduleMode.inexact,
@@ -162,7 +167,7 @@ class NotificationService {
           await _plugin.zonedSchedule(
             id,
             medicine.name,
-            strings.timeToTake(medicine.dosage),
+            strings.timeToTake(doseLabel),
             scheduled,
             _notificationDetails(),
             androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -176,7 +181,7 @@ class NotificationService {
           await _plugin.zonedSchedule(
             id,
             medicine.name,
-            strings.timeToTake(medicine.dosage),
+            strings.timeToTake(doseLabel),
             scheduled,
             _notificationDetails(),
             androidScheduleMode: AndroidScheduleMode.inexact,
@@ -317,22 +322,34 @@ class NotificationService {
     final medicineId = data['medicineId'] as int? ?? 0;
     final medicineName =
         data['medicineName'] as String? ?? strings.fallbackMedicineName;
-    final dosage = data['dosage'] as String? ?? '';
+    final dosage = data['dosage'] as String?;
     final scheduledTime = data['scheduledTime'] as String? ?? '';
+    final resolvedScheduledTime = await _resolveScheduledTime(
+      medicineId: medicineId,
+      notificationId: response.id,
+      scheduledTime: scheduledTime,
+    );
+    final doseLabel = _doseLabel(strings, medicineName, dosage);
 
     if (response.actionId == AppConstants.actionSnooze) {
       await scheduleSnooze(
         medicineId: medicineId,
         title: medicineName,
-        body: strings.timeToTake(dosage),
+        body: strings.timeToTake(doseLabel),
         minutes: AppConstants.snoozeMinutesDefault,
       );
-      await _addLog(medicineId, scheduledTime, LogStatus.snoozed);
+      await _addLog(medicineId, resolvedScheduledTime, LogStatus.snoozed);
+      _showActionSnackbar(
+        strings: strings,
+        status: LogStatus.snoozed,
+        snoozeMinutes: AppConstants.snoozeMinutesDefault,
+      );
       return;
     }
 
     if (response.actionId == AppConstants.actionTaken) {
-      await _addLog(medicineId, scheduledTime, LogStatus.taken);
+      await _addLog(medicineId, resolvedScheduledTime, LogStatus.taken);
+      _showActionSnackbar(strings: strings, status: LogStatus.taken);
       return;
     }
   }
@@ -357,7 +374,7 @@ class NotificationService {
   String _buildPayload({
     required int medicineId,
     required String medicineName,
-    required String dosage,
+    required String? dosage,
     required String scheduledTime,
   }) {
     return jsonEncode({
@@ -365,6 +382,85 @@ class NotificationService {
       'medicineName': medicineName,
       'dosage': dosage,
       'scheduledTime': scheduledTime,
+    });
+  }
+
+  String _doseLabel(
+    AppLocalizations strings,
+    String medicineName,
+    String? dosage,
+  ) {
+    final trimmed = dosage?.trim();
+    if (trimmed != null && trimmed.isNotEmpty) {
+      return trimmed;
+    }
+    final name = medicineName.trim();
+    if (name.isNotEmpty) {
+      return name;
+    }
+    return strings.fallbackMedicineName;
+  }
+
+  Future<String> _resolveScheduledTime({
+    required int medicineId,
+    required int? notificationId,
+    required String scheduledTime,
+  }) async {
+    final trimmed = scheduledTime.trim();
+    if (trimmed.isNotEmpty || notificationId == null) {
+      return scheduledTime;
+    }
+    final medicine = await MedicineRepository().getById(medicineId);
+    if (medicine == null) return scheduledTime;
+
+    for (final time in medicine.times) {
+      final timeLabel = DateTimeHelpers.formatTimeForStorage(time);
+      if (medicine.frequency == MedicineFrequency.specificDays &&
+          medicine.days.isNotEmpty) {
+        for (final day in medicine.days) {
+          final id = NotificationHelpers.buildNotificationId(
+            medicineId,
+            '$timeLabel-$day',
+          );
+          if (id == notificationId) {
+            return timeLabel;
+          }
+        }
+      } else {
+        final id = NotificationHelpers.buildNotificationId(
+          medicineId,
+          timeLabel,
+        );
+        if (id == notificationId) {
+          return timeLabel;
+        }
+      }
+    }
+
+    return scheduledTime;
+  }
+
+  void _showActionSnackbar({
+    required AppLocalizations strings,
+    required String status,
+    int? snoozeMinutes,
+  }) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (status == LogStatus.taken) {
+        showAppSnackbar(
+          message: strings.snackMarkedTaken,
+          backgroundColor: AppColors.sage,
+          icon: Icons.check_circle_outline,
+        );
+      } else if (status == LogStatus.snoozed) {
+        showAppSnackbar(
+          message: strings.snackSnoozed(
+            snoozeMinutes ?? AppConstants.snoozeMinutesDefault,
+          ),
+          backgroundColor: AppColors.snoozed,
+          icon: Icons.snooze,
+        );
+      }
     });
   }
 

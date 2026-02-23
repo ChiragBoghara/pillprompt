@@ -20,7 +20,7 @@ class AppDatabase {
 
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
@@ -29,7 +29,7 @@ class AppDatabase {
           CREATE TABLE ${AppConstants.tableMedicines} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            dosage TEXT NOT NULL,
+            dosage TEXT,
             frequency TEXT NOT NULL,
             times TEXT NOT NULL,
             days TEXT,
@@ -64,6 +64,41 @@ class AppDatabase {
               'ALTER TABLE ${AppConstants.tableMedicines} ADD COLUMN days TEXT',
             );
           }
+        }
+        if (oldVersion < 3) {
+          await db.execute('PRAGMA foreign_keys=OFF');
+          await db.transaction((txn) async {
+            await txn.execute('''
+              CREATE TABLE ${AppConstants.tableMedicines}_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                dosage TEXT,
+                frequency TEXT NOT NULL,
+                times TEXT NOT NULL,
+                days TEXT,
+                start_date TEXT NOT NULL,
+                end_date TEXT,
+                before_food INTEGER NOT NULL,
+                is_active INTEGER NOT NULL
+              )
+            ''');
+
+            await txn.execute('''
+              INSERT INTO ${AppConstants.tableMedicines}_new (
+                id, name, dosage, frequency, times, days, start_date, end_date,
+                before_food, is_active
+              )
+              SELECT id, name, dosage, frequency, times, days, start_date, end_date,
+                     before_food, is_active
+              FROM ${AppConstants.tableMedicines}
+            ''');
+
+            await txn.execute('DROP TABLE ${AppConstants.tableMedicines}');
+            await txn.execute(
+              'ALTER TABLE ${AppConstants.tableMedicines}_new RENAME TO ${AppConstants.tableMedicines}',
+            );
+          });
+          await db.execute('PRAGMA foreign_keys=ON');
         }
       },
     );

@@ -194,7 +194,7 @@ class _MedicineCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              '${medicine.dosage} - ${frequencyLabel(l10n, medicine.frequency)}',
+              _medicineSubtitle(l10n, medicine),
               style: textTheme.bodyMedium,
             ),
             const SizedBox(height: 12),
@@ -419,6 +419,15 @@ String _daysLabel(List<int> days, String localeTag) {
       .map((d) => DateTimeHelpers.weekdayShortName(d, locale: localeTag))
       .toList();
   return names.join(', ');
+}
+
+String _medicineSubtitle(AppLocalizations l10n, Medicine medicine) {
+  final dosage = medicine.dosage?.trim();
+  final frequency = frequencyLabel(l10n, medicine.frequency);
+  if (dosage == null || dosage.isEmpty) {
+    return frequency;
+  }
+  return '$dosage - $frequency';
 }
 
 class _WeekPreview extends StatelessWidget {

@@ -196,6 +196,10 @@ class _HistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final color = _statusColor(item.statusCode);
+    final dosage = item.dosage?.trim();
+    final subtitle = dosage == null || dosage.isEmpty
+        ? item.time
+        : '${item.time} - $dosage';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -222,10 +226,7 @@ class _HistoryCard extends StatelessWidget {
               children: [
                 Text(item.name, style: textTheme.titleMedium),
                 const SizedBox(height: 4),
-                Text(
-                  '${item.time} - ${item.dosage}',
-                  style: textTheme.bodyMedium,
-                ),
+                Text(subtitle, style: textTheme.bodyMedium),
               ],
             ),
           ),
@@ -255,7 +256,7 @@ class _HistoryCard extends StatelessWidget {
 class _HistoryItem {
   final String name;
   final String time;
-  final String dosage;
+  final String? dosage;
   final String statusCode;
   final String statusLabel;
 

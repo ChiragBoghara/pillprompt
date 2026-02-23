@@ -167,7 +167,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nameRequired => 'Name ist erforderlich';
 
   @override
-  String get dosageLabel => 'Dosierung';
+  String get dosageLabel => 'Dosierung (optional)';
 
   @override
   String get dosageHint => 'z. B. 500 mg';

@@ -6,7 +6,7 @@ import '../../core/helpers/date_time_helpers.dart';
 class Medicine {
   final int? id;
   final String name;
-  final String dosage;
+  final String? dosage;
   final String frequency;
   final List<TimeOfDay> times;
   final List<int> days;
@@ -75,7 +75,7 @@ class Medicine {
     return Medicine(
       id: map['id'] as int?,
       name: map['name'] as String,
-      dosage: map['dosage'] as String,
+      dosage: map['dosage'] as String?,
       frequency: MedicineFrequency.normalize(map['frequency'] as String),
       times: DateTimeHelpers.decodeTimes(map['times'] as String?),
       days: DateTimeHelpers.decodeWeekdays(map['days'] as String?),

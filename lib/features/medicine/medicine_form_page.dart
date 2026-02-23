@@ -38,7 +38,7 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
     _editing = Get.arguments is Medicine ? Get.arguments as Medicine : null;
     if (_editing != null) {
       _nameController.text = _editing!.name;
-      _dosageController.text = _editing!.dosage;
+      _dosageController.text = _editing!.dosage ?? '';
       _frequency = _editing!.frequency;
       _times = List.of(_editing!.times);
       _days = List.of(_editing!.days);
@@ -46,6 +46,9 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
       _endDate = _editing!.endDate;
       _beforeFood = _editing!.beforeFood;
       _isActive = _editing!.isActive;
+    } else {
+      final now = DateTime.now();
+      _startDate = DateTime(now.year, now.month, now.day);
     }
   }
 
@@ -97,9 +100,6 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
                   labelText: l10n.dosageLabel,
                   hintText: l10n.dosageHint,
                 ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? l10n.dosageRequired
-                    : null,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
@@ -165,7 +165,7 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
                 Text(
                   _timesError!,
                   style: textTheme.bodyMedium?.copyWith(
-                    color: Colors.redAccent,
+                    color: AppColors.warning,
                   ),
                 ),
               ],
@@ -196,7 +196,7 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
                 Text(
                   _dateError!,
                   style: textTheme.bodyMedium?.copyWith(
-                    color: Colors.redAccent,
+                    color: AppColors.warning,
                   ),
                 ),
               ],
@@ -299,10 +299,11 @@ class _MedicineFormPageState extends State<MedicineFormPage> {
     }
     if (!isValid) return;
 
+    final dosage = _dosageController.text.trim();
     final medicine = Medicine(
       id: _editing?.id,
       name: _nameController.text.trim(),
-      dosage: _dosageController.text.trim(),
+      dosage: dosage.isEmpty ? null : dosage,
       frequency: _frequency,
       times: _times,
       days: _days,

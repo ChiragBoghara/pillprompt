@@ -4,7 +4,7 @@ class MedicineLogEntry {
   final int id;
   final int medicineId;
   final String medicineName;
-  final String dosage;
+  final String? dosage;
   final String scheduledTime;
   final String status;
   final DateTime date;
@@ -24,7 +24,7 @@ class MedicineLogEntry {
       id: map['id'] as int,
       medicineId: map['medicine_id'] as int,
       medicineName: map['medicine_name'] as String,
-      dosage: map['dosage'] as String,
+      dosage: map['dosage'] as String?,
       scheduledTime: map['scheduled_time'] as String,
       status: LogStatus.normalize(map['status'] as String),
       date: DateTime.parse(map['date'] as String),
